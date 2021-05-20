@@ -1,7 +1,15 @@
-# Awesome Project Build with TypeORM
+# graphql-server
 
-Steps to run this project:
+Scalable server boilerplate using TypeScript, Node, TypeOrm, GraphQL
 
-1. Run `npm i` command
-2. Setup database settings inside `ormconfig.json` file
-3. Run `npm start` command
+# to run
+
+```bash
+yarn install
+yarn start
+
+```
+
+# Inspiration
+
+code less, buidl more.
