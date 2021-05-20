@@ -12,4 +12,4 @@ yarn start
 
 # Inspiration
 
-code less, buidl more.
+code less, build more.
