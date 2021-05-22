@@ -12,7 +12,7 @@ beforeAll(async () => {
 });
 
 // const host = "http://localhost:4000";
-const email = "tesdt@gmail.com";
+const email = "tesdt@gdddmail.com";
 const password = "dlfjdkf";
 const mutation = `
 
