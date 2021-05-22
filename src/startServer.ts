@@ -5,7 +5,8 @@ import * as fs from "fs";
 import { createTypeOrmConnection } from "./utils/createTypeOrmConnection";
 import { GraphQLServer } from "graphql-yoga";
 import { GraphQLSchema } from "graphql";
-// import { makeExecutableSchema } from "graphql-tools";
+import { makeExecutableSchema } from "@graphql-tools/schema";
+// import { mergeSchemas } from "graphql-tools";
 const chalk = require("chalk");
 
 /**
@@ -19,7 +20,13 @@ const chalk = require("chalk");
 export const startServer = async () => {
   const schemas: GraphQLSchema[] = [];
   const folders = fs.readdirSync(path.join(__dirname, "./modules"));
-  console.log(folders, schemas);
+  folders.forEach((folder) => {
+    const { resolvers } = require(`./modules/${folder}/resolvers.ts`);
+    const typeDefs = importSchema(
+      path.join(__dirname, `./modules/${folder}/schema.graphql`)
+    );
+    schemas.push(makeExecutableSchema({ resolvers, typeDefs }));
+  });
   // some kind of loop? goal is to look in the specified folders, grab the resolvers and the schemas,
   // merge the schemas, create a new server (line26) with the merged schema.
   const typeDefs = importSchema(path.join(__dirname, "./schema.graphql"));
