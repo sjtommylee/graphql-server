@@ -5,7 +5,7 @@ const chalk = require("chalk");
 
 export const startServer = async () => {
   const server = new GraphQLServer({ schema: genSchema() });
-  console.log(chalk.red.bold(server));
+  // console.log(chalk.red.bold(server));
   await createTypeOrmConnection();
   const app = await server.start({
     port: process.env.NODE_ENV === "test" ? 0 : 4000,
