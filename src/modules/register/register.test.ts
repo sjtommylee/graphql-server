@@ -3,6 +3,8 @@ import { User } from "../../entity/User";
 // import { createTypeOrmConnection } from "../utils/createTypeOrmConnection";
 import { startServer } from "../../startServer";
 import { AddressInfo } from "net";
+import { duplicateEmail } from "./errorMessages";
+
 let getHost = () => "";
 
 beforeAll(async () => {
@@ -12,10 +14,9 @@ beforeAll(async () => {
 });
 
 // const host = "http://localhost:4000";
-const email = "tes";
-const password = "1";
-const mutation = `
-
+const email = "tommy@gmail.com";
+const password = "Dltmdwns";
+const mutation = (email: string, password: string) => `
 mutation {
     register(email: "${email}", password: "${password}") {
       path
@@ -24,7 +25,7 @@ mutation {
 }
 `;
 test("Register User", async () => {
-  const response = await request(getHost(), mutation);
+  const response = await request(getHost(), mutation(email, password));
   expect(response).toEqual({ register: null });
   const users = await User.find({ where: { email } });
   expect(users).toHaveLength(1);
@@ -32,16 +33,16 @@ test("Register User", async () => {
   expect(user.email).toEqual(email);
   expect(user.password).not.toEqual(password);
 
-  const response2: any = await request(getHost(), mutation);
+  //test for duplicate email
+  const response2: any = await request(getHost(), mutation(email, password));
   expect(response2.register).toHaveLength(1);
-  expect(response2.register[0].path).toEqual("email");
-
-  expect(response2).toEqual({
-    register: [
-      {
-        path: "email",
-        message: "already taken",
-      },
-    ],
+  expect(response2.register[0]).toEqual({
+    path: "email",
+    message: duplicateEmail,
   });
+  //catch email
+
+  const response3: any = await request(getHost(), mutation("b", password));
+  expect(response3.register).toHaveLength(1);
+  expect(response3.register[0].path).toEqual("email");
 });

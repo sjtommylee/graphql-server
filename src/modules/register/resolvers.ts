@@ -2,7 +2,11 @@ import { ResolverMap } from "../../types/graphql-utils";
 import bcrypt from "bcryptjs";
 import { User } from "../../entity/User";
 import * as yup from "yup";
-
+import { formatYupError } from "../../utils/formatYupError";
+import { duplicateEmail } from "./errorMessages";
+/**
+ * @schema - you can pass in an additional argument in a field to set a different error message. ie: ()
+ */
 const schema = yup.object().shape({
   email: yup.string().min(3).max(255).email(),
   password: yup.string().min(3).max(255),
@@ -17,7 +21,8 @@ export const resolvers: ResolverMap = {
       try {
         await schema.validate(args, { abortEarly: false });
       } catch (err) {
-        console.log(err);
+        // console.log(err);
+        return formatYupError(err);
       }
       const { email, password } = args;
       //finding a user if it exists, if a user exists, return the error message in the obj.
@@ -29,7 +34,7 @@ export const resolvers: ResolverMap = {
         return [
           {
             path: "email",
-            message: "already taken",
+            message: duplicateEmail,
           },
         ];
       }
