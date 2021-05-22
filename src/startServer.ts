@@ -9,26 +9,9 @@ import { makeExecutableSchema } from "@graphql-tools/schema";
 // import { mergeSchemas } from "graphql-tools";
 const chalk = require("chalk");
 
-/**
- * https://www.youtube.com/watch?v=4i3W6g_u1Nw&list=PLN3n1USn4xlky9uj6wOhfsPez7KZOqm2V&index=8
- * todos:
- * 1. figure out how to stich the schemas together.
- *
- *
- *
- */
 export const startServer = async () => {
   const schemas: GraphQLSchema[] = [];
   const folders = fs.readdirSync(path.join(__dirname, "./modules"));
-  folders.forEach((folder) => {
-    const { resolvers } = require(`./modules/${folder}/resolvers.ts`);
-    const typeDefs = importSchema(
-      path.join(__dirname, `./modules/${folder}/schema.graphql`)
-    );
-    schemas.push(makeExecutableSchema({ resolvers, typeDefs }));
-  });
-  // some kind of loop? goal is to look in the specified folders, grab the resolvers and the schemas,
-  // merge the schemas, create a new server (line26) with the merged schema.
   const typeDefs = importSchema(path.join(__dirname, "./schema.graphql"));
   const server = new GraphQLServer({ typeDefs, resolvers });
   await createTypeOrmConnection();
