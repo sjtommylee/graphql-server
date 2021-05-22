@@ -5,13 +5,14 @@ import { makeExecutableSchema } from "graphql-tools";
 import * as glob from "glob";
 
 export const genSchema = () => {
-  const modulePath = path.join(__dirname, "../modules");
+  const pathToModules = path.join(__dirname, "../modules");
   const graphqlTypes = glob
-    .sync(`${modulePath}/**/*.graphql`)
-    .map((i: number | fs.PathLike) => fs.readFileSync(i, { encoding: "utf8" }));
+    .sync(`${pathToModules}/**/*.graphql`)
+    .map((x) => fs.readFileSync(x, { encoding: "utf8" }));
+
   const resolvers = glob
-    .sync(`${modulePath}/**/resolvers.?s`)
-    .map((resolver: string) => require(resolver).resolvers);
+    .sync(`${pathToModules}/**/resolvers.?s`)
+    .map((resolver) => require(resolver).resolvers);
 
   return makeExecutableSchema({
     typeDefs: mergeTypes(graphqlTypes),
