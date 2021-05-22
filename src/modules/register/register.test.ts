@@ -3,7 +3,12 @@ import { User } from "../../entity/User";
 // import { createTypeOrmConnection } from "../utils/createTypeOrmConnection";
 import { startServer } from "../../startServer";
 import { AddressInfo } from "net";
-import { duplicateEmail } from "./errorMessages";
+import {
+  duplicateEmail,
+  invalidEmail,
+  invalidEmailLength,
+  invaldPasswordLength,
+} from "./errorMessages";
 
 let getHost = () => "";
 
@@ -43,6 +48,51 @@ test("Register User", async () => {
   //catch email
 
   const response3: any = await request(getHost(), mutation("b", password));
-  expect(response3.register).toHaveLength(1);
-  expect(response3.register[0].path).toEqual("email");
+  // expect(response3.register).toHaveLength(1);
+  // expect(response3.register[0]).toEqual({
+  //   path: "email",
+  //   message: invalidEmailLength,
+  // });
+  expect(response3).toEqual({
+    register: [
+      {
+        path: "email",
+        message: invalidEmailLength,
+      },
+      {
+        path: "email",
+        message: invalidEmail,
+      },
+    ],
+  });
+
+  //bad password
+  const response4: any = await request(getHost(), mutation(email, "ad"));
+  expect(response4).toEqual({
+    register: [
+      {
+        path: "password",
+        message: invaldPasswordLength,
+      },
+    ],
+  });
+
+  // everything you sent is bad
+  const response5: any = await request(getHost(), mutation("ba", "ad"));
+  expect(response5).toEqual({
+    register: [
+      {
+        path: "email",
+        message: invalidEmailLength,
+      },
+      {
+        path: "email",
+        message: invalidEmail,
+      },
+      {
+        path: "password",
+        message: invaldPasswordLength,
+      },
+    ],
+  });
 });
