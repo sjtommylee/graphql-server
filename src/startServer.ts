@@ -1,13 +1,12 @@
 import { createTypeOrmConnection } from "./utils/createTypeOrmConnection";
 import { GraphQLServer } from "graphql-yoga";
 import { genSchema } from "./utils/genSchema";
-import Redis from "ioredis";
-import { User } from "./entity/User";
-
+// import Redis from "ioredis";
+import { redis } from "./redis";
+import { confirmEmail } from "./routes/confirmEmail";
 const chalk = require("chalk");
 
 export const startServer = async () => {
-  const redis = new Redis();
   const server = new GraphQLServer({
     schema: genSchema(),
     context: ({ request }) => ({
@@ -17,17 +16,7 @@ export const startServer = async () => {
   });
   // console.log(chalk.red.bold(server));
 
-  server.express.get("/confirm/:id", async (req, res) => {
-    const { id } = req.params;
-    const userId: string | any = await redis.get(id);
-    if (userId) {
-      await User.update({ id: userId }, { confirmed: true });
-      await redis.del(id);
-      res.send("ok");
-    } else {
-      res.send("invalid");
-    }
-  });
+  server.express.get("/confirm/:id", confirmEmail);
 
   await createTypeOrmConnection();
   const app = await server.start({

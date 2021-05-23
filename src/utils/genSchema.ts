@@ -4,6 +4,11 @@ import * as fs from "fs";
 import { makeExecutableSchema } from "graphql-tools";
 import * as glob from "glob";
 
+/**
+ * @function genSchema - look for the modules folder, and look through for all files ending in .graqphl or ts/js
+ *
+ */
+
 export const genSchema = () => {
   const pathToModules = path.join(__dirname, "../modules");
   const graphqlTypes = glob

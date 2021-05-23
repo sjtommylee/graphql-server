@@ -1,6 +1,6 @@
 import { Redis } from "ioredis";
 import { v4 } from "uuid";
-
+// import { redis } from "../redis";
 //http://localhost:4000
 // https://my-site.com
 // => https://my-site.com/confirm/<id>
