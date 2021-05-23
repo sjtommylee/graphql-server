@@ -29,70 +29,77 @@ mutation {
     }
 }
 `;
-test("Register User", async () => {
-  const response = await request(getHost(), mutation(email, password));
-  expect(response).toEqual({ register: null });
-  const users = await User.find({ where: { email } });
-  expect(users).toHaveLength(1);
-  const user = users[0];
-  expect(user.email).toEqual(email);
-  expect(user.password).not.toEqual(password);
+describe("Register User", () => {
+  it("check duplicate email", async () => {
+    const response = await request(getHost(), mutation(email, password));
+    expect(response).toEqual({ register: null });
+    const users = await User.find({ where: { email } });
+    expect(users).toHaveLength(1);
+    const user = users[0];
+    expect(user.email).toEqual(email);
+    expect(user.password).not.toEqual(password);
 
-  //test for duplicate email
-  const response2: any = await request(getHost(), mutation(email, password));
-  expect(response2.register).toHaveLength(1);
-  expect(response2.register[0]).toEqual({
-    path: "email",
-    message: duplicateEmail,
-  });
-  //catch email
-
-  const response3: any = await request(getHost(), mutation("b", password));
-  // expect(response3.register).toHaveLength(1);
-  // expect(response3.register[0]).toEqual({
-  //   path: "email",
-  //   message: invalidEmailLength,
-  // });
-  expect(response3).toEqual({
-    register: [
-      {
-        path: "email",
-        message: invalidEmailLength,
-      },
-      {
-        path: "email",
-        message: invalidEmail,
-      },
-    ],
+    const response2: any = await request(getHost(), mutation(email, password));
+    expect(response2.register).toHaveLength(1);
+    expect(response2.register[0]).toEqual({
+      path: "email",
+      message: duplicateEmail,
+    });
   });
 
-  //bad password
-  const response4: any = await request(getHost(), mutation(email, "ad"));
-  expect(response4).toEqual({
-    register: [
-      {
-        path: "password",
-        message: invaldPasswordLength,
-      },
-    ],
+  it("check invalid email", async () => {
+    const response3: any = await request(getHost(), mutation("b", password));
+    // expect(response3.register).toHaveLength(1);
+    // expect(response3.register[0]).toEqual({
+    //   path: "email",
+    //   message: invalidEmailLength,
+    // });
+    expect(response3).toEqual({
+      register: [
+        {
+          path: "email",
+          message: invalidEmailLength,
+        },
+        {
+          path: "email",
+          message: invalidEmail,
+        },
+      ],
+    });
+  });
+
+  it("check bad password", async () => {
+    //bad password
+    const response4: any = await request(getHost(), mutation(email, "ad"));
+    expect(response4).toEqual({
+      register: [
+        {
+          path: "password",
+          message: invaldPasswordLength,
+        },
+      ],
+    });
+  });
+
+  it("check bad password and bad email", async () => {
+    const response5: any = await request(getHost(), mutation("ba", "ad"));
+    expect(response5).toEqual({
+      register: [
+        {
+          path: "email",
+          message: invalidEmailLength,
+        },
+        {
+          path: "email",
+          message: invalidEmail,
+        },
+        {
+          path: "password",
+          message: invaldPasswordLength,
+        },
+      ],
+    });
   });
 
   // everything you sent is bad
-  const response5: any = await request(getHost(), mutation("ba", "ad"));
-  expect(response5).toEqual({
-    register: [
-      {
-        path: "email",
-        message: invalidEmailLength,
-      },
-      {
-        path: "email",
-        message: invalidEmail,
-      },
-      {
-        path: "password",
-        message: invaldPasswordLength,
-      },
-    ],
-  });
 });

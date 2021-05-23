@@ -9,6 +9,7 @@ import {
   invalidEmail,
   invalidEmailLength,
 } from "./errorMessages";
+import confirmationEmail from "../../utils/confirmationEmail";
 /**
  * @schema - you can pass in an additional argument in a field to set a different error message. ie: ()
  */
@@ -22,7 +23,11 @@ export const resolvers: ResolverMap = {
     bye: () => "Bye",
   },
   Mutation: {
-    register: async (_, args: GQL.IRegisterOnMutationArguments) => {
+    register: async (
+      _,
+      args: GQL.IRegisterOnMutationArguments,
+      { redis, url }
+    ) => {
       try {
         await schema.validate(args, { abortEarly: false });
       } catch (err) {
@@ -49,6 +54,10 @@ export const resolvers: ResolverMap = {
         password: hashedPassword,
       });
       user.save();
+
+      const link = await confirmationEmail(url, user.id, redis);
+      console.log(link);
+
       return null;
     },
   },
