@@ -15,6 +15,7 @@ import { v4 } from "uuid";
 
 const confirmationEmail = async (url: string, userId: string, redis: Redis) => {
   const id = v4();
+  console.log("confirmationemail.ts", id);
   await redis.set(id, userId, "ex", 60 * 60 * 24);
   return `${url}/confirm/${id}`;
 };
