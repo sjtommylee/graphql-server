@@ -1,4 +1,5 @@
 import { createTypeOrmConnection } from "./utils/createTypeOrmConnection";
+import session from "express-session";
 import { GraphQLServer } from "graphql-yoga";
 import { genSchema } from "./utils/genSchema";
 // import Redis from "ioredis";
@@ -15,7 +16,19 @@ export const startServer = async () => {
     }),
   });
   // console.log(chalk.red.bold(server));
-
+  server.express.use(
+    session({
+      name: "qid",
+      secret: SESSION_SECRET,
+      resave: false,
+      saveUninitialized: false,
+      cookie: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+      },
+    })
+  );
   server.express.get("/confirm/:id", confirmEmail);
 
   await createTypeOrmConnection();
