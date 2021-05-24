@@ -7,13 +7,9 @@ Scalable server boilerplate using TypeScript, Node, TypeOrm, GraphQL
 ```bash
 yarn install
 yarn start
-
+yarn test
 ```
 
 # Inspiration
 
 code less, build more.
-
-# pick up from
-
-https://www.youtube.com/watch?v=mEEBPmUS34U&list=PLN3n1USn4xlky9uj6wOhfsPez7KZOqm2V&index=15
