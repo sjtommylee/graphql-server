@@ -1,6 +1,5 @@
 import { request } from "graphql-request";
 import { invalidLogin } from "./errorMessages";
-import * as faker from "faker";
 
 const loginMutation = (email: string, password: string) => `
 mutation {
@@ -10,11 +9,11 @@ mutation {
     }
 }
 `;
-
+const TEST_HOST = "http://localhost.4000";
 describe("login", () => {
   test("test login", async () => {
     const response = await request(
-      process.env.TEST_HOST as string,
+      TEST_HOST as string,
       loginMutation("sj@sj.com", "dldl")
     );
     expect(response).toEqual({
