@@ -1,7 +1,7 @@
 type Query {
-    dummy: String?
+  dummy: String
 }
 
 type Mutation {
-    logout: Boolean
+  logout: Boolean
 }

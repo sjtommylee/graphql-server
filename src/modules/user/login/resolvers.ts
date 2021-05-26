@@ -35,7 +35,7 @@ export const resolvers: ResolverMap = {
       }
       session.userId = user.id;
       if (req.sessionID) {
-        await redis.lpush(user.id, req.sessionID);
+        await redis.lpush(`SID: ${user.id}, ${req.sessionID}`);
       }
       //creates an array and add one element, or push the elements on to the array if it esits
       return null;

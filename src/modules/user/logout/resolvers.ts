@@ -6,15 +6,12 @@ export const resolvers: ResolverMap = {
     logout: async (_, __, { session, redis }) => {
       const { userId } = session;
       if (userId) {
-        removeAllUsersSessions(userId, redis);
-        session.destroy((err) => {
-          if (err) {
-            console.log(err);
-          }
-        });
+        const sessionIds = await redis.lrange(`SID:${userId}`, 0, -1);
+        for (let i = 0; i < sessionIds.length; i += 1) {
+          await redis.del(sessionIds[i]);
+        }
         return true;
       }
-
       return false;
     },
   },
