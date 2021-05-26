@@ -1,13 +1,17 @@
-import { ResolverMap } from "types/graphql-utils";
-import { User } from "entity/User";
-import { confirmEmailError, invalidLogin } from "../login/errorMessages";
+import { ResolverMap } from "../../../types/graphql-utils";
+import { User } from "../../../entity/User";
 import * as bcrypt from "bcryptjs";
+import { invalidLogin, emailConfirmation } from "../errorMessages";
 const errorResponse = [
   {
     path: "email",
     message: invalidLogin,
   },
 ];
+
+//20 minutes
+//lock out account
+
 export const resolvers: ResolverMap = {
   Query: {
     dummy2: () => "bye",
@@ -27,7 +31,7 @@ export const resolvers: ResolverMap = {
         return [
           {
             path: "email",
-            message: confirmEmailError,
+            message: emailConfirmation,
           },
         ];
       }

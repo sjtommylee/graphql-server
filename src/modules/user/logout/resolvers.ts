@@ -1,4 +1,4 @@
-import { ResolverMap } from "types/graphql-utils";
+import { ResolverMap } from "../../../types/graphql-utils";
 // import middleware from
 /**
  * @logout - first grabbing the session id's, based off the current user.

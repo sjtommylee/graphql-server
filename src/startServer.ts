@@ -1,3 +1,5 @@
+import "reflect-metadata";
+import "dotenv/config";
 import { createTypeOrmConnection } from "./utils/createTypeOrmConnection";
 import session from "express-session";
 import { GraphQLServer } from "graphql-yoga";
@@ -5,11 +7,25 @@ import { genSchema } from "./utils/genSchema";
 import { redis } from "./redis";
 import { confirmEmail } from "./routes/confirmEmail";
 import connectRedis from "connect-redis";
+// import * as RateLimit from "express-rate-limit";
+// import * as RateLimitRedisStore from "rate-limit-redis";
+import chalk from "chalk";
 const RedisStore = connectRedis(session);
-const chalk = require("chalk");
 const SESSION_SECRET = "nabys";
 
+/**
+ * @function startServer -
+ *
+ * 1. we create a new server with GraqhQLServer, passing in two arguments: schema - the "model" or how we describe the data. context - an obj that is shared by all resolvers
+ * 2.
+ *
+ */
+
 export const startServer = async () => {
+  if (process.env.NODE_ENV === "test") {
+    await redis.flushall();
+  }
+
   const server = new GraphQLServer({
     schema: genSchema(),
     context: ({ request }) => ({

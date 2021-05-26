@@ -1,5 +1,5 @@
 type Query {
-  dummy2: string
+  dummy2: String
 }
 
 type Mutation {

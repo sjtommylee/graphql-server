@@ -1,8 +1,11 @@
-import { ResolverMap } from "types/graphql-utils";
+import { ResolverMap } from "../../../types/graphql-utils";
 import bcrypt from "bcryptjs";
-import { User } from "entity/User";
-import { confirmEmailError, invalidLogin } from "./errorMessages";
-// import session from "express-session";
+import { User } from "../../../entity/User";
+import {
+  invalidLogin,
+  emailConfirmation,
+  // forgotPasswordLocked,
+} from "../errorMessages";
 const errorResponse = [
   {
     path: "email",
@@ -25,7 +28,7 @@ export const resolvers: ResolverMap = {
         return [
           {
             path: "email",
-            message: confirmEmailError,
+            message: emailConfirmation,
           },
         ];
       }
