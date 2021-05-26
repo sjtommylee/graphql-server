@@ -1,8 +1,7 @@
 import { ResolverMap } from "types/graphql-utils";
-import bcrypt from "bcryptjs";
 import { User } from "entity/User";
-import { confirmEmailError, invalidLogin } from "./errorMessages";
-// import session from "express-session";
+import { confirmEmailError, invalidLogin } from "../login/errorMessages";
+import * as bcrypt from "bcryptjs";
 const errorResponse = [
   {
     path: "email",
@@ -10,6 +9,9 @@ const errorResponse = [
   },
 ];
 export const resolvers: ResolverMap = {
+  Query: {
+    dummy2: () => "bye",
+  },
   Mutation: {
     login: async (
       _,
