@@ -1,8 +1,0 @@
-# querying for a register
-
-mutation {
-  register(email: "sjtommylee@gmail.com", password: "Dltmdwns90") {
-    path
-    message
-  }
-}

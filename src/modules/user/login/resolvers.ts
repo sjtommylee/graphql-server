@@ -1,6 +1,6 @@
-import { ResolverMap } from "../../types/graphql-utils";
+import { ResolverMap } from "../../../types/graphql-utils";
 import bcrypt from "bcryptjs";
-import { User } from "../../entity/User";
+import { User } from "../../../entity/User";
 import { confirmEmailError, invalidLogin } from "./errorMessages";
 // import session from "express-session";
 const errorResponse = [
@@ -14,7 +14,7 @@ export const resolvers: ResolverMap = {
     login: async (
       _,
       { email, password }: GQL.ILoginOnMutationArguments,
-      { session }
+      { session, redis, req }
     ) => {
       const user = await User.findOne({ where: { email } });
       if (!user) {
@@ -34,6 +34,10 @@ export const resolvers: ResolverMap = {
         return errorResponse;
       }
       session.userId = user.id;
+      if (req.sessionID) {
+        await redis.lpush(user.id, req.sessionID);
+      }
+      //creates an array and add one element, or push the elements on to the array if it esits
       return null;
     },
   },

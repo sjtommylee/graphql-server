@@ -1,17 +1,17 @@
-import { ResolverMap } from "../../types/graphql-utils";
+import { ResolverMap } from "../../../types/graphql-utils";
 import bcrypt from "bcryptjs";
-import { User } from "../../entity/User";
+import { User } from "../../../entity/User";
 import * as yup from "yup";
 import { v4 as uuid } from "uuid";
-import { formatYupError } from "../../utils/formatYupError";
+import { formatYupError } from "../../../utils/formatYupError";
 import {
   duplicateEmail,
   invaldPasswordLength,
   invalidEmail,
   invalidEmailLength,
 } from "./errorMessages";
-import confirmationEmail from "../../utils/confirmationEmail";
-import { sendEmail } from "../../utils/sendEmail";
+import confirmationEmail from "../../../utils/confirmationEmail";
+import { sendEmail } from "../../../utils/sendEmail";
 /**
  * @schema - you can pass in an additional argument in a field to set a different error message. ie: ()
  */

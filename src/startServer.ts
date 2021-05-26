@@ -16,6 +16,7 @@ export const startServer = async () => {
       redis,
       url: request.protocol + "://" + request.get("host"),
       session: request.session,
+      req: request,
     }),
   });
   // console.log(chalk.red.bold(server));
@@ -23,6 +24,7 @@ export const startServer = async () => {
     session({
       store: new RedisStore({
         client: redis as any,
+        prefix: "sess:",
       }),
       name: "qid",
       secret: SESSION_SECRET,
@@ -46,6 +48,6 @@ export const startServer = async () => {
     cors,
     port: process.env.NODE_ENV === "test" ? 0 : 4000,
   });
-  console.log(chalk.bold.green("server is running on localhost: 4000"));
+  console.log(chalk.black.bgGreen("server is running on localhost: 4000"));
   return app;
 };
