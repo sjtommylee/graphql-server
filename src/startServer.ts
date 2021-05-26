@@ -7,25 +7,23 @@ import { genSchema } from "./utils/genSchema";
 import { redis } from "./redis";
 import { confirmEmail } from "./routes/confirmEmail";
 import connectRedis from "connect-redis";
-// import * as RateLimit from "express-rate-limit";
-// import * as RateLimitRedisStore from "rate-limit-redis";
 import chalk from "chalk";
+import { redisPrefix } from "./constants";
+import { createTestConnection } from "./utils/tests/createTestConnection";
 const RedisStore = connectRedis(session);
 const SESSION_SECRET = "nabys";
 
 /**
  * @function startServer -
  *
- * 1. we create a new server with GraqhQLServer, passing in two arguments: schema - the "model" or how we describe the data. context - an obj that is shared by all resolvers
- * 2.
- *
  */
 
+// flushing the redis cache if the env is a test, just like how we are purging the db in a test.
 export const startServer = async () => {
   if (process.env.NODE_ENV === "test") {
     await redis.flushall();
   }
-
+  // creating a new graphql server, passing in the schema and the context.
   const server = new GraphQLServer({
     schema: genSchema(),
     context: ({ request }) => ({
@@ -35,12 +33,13 @@ export const startServer = async () => {
       req: request,
     }),
   });
-  // console.log(chalk.red.bold(server));
+
+  // we are creating a new session object by passing in a new redis store.
   server.express.use(
     session({
       store: new RedisStore({
         client: redis as any,
-        prefix: "sess:",
+        prefix: redisPrefix,
       }),
       name: "qid",
       secret: SESSION_SECRET,
@@ -59,7 +58,11 @@ export const startServer = async () => {
   };
   server.express.get("/confirm/:id", confirmEmail);
 
-  await createTypeOrmConnection();
+  if (process.env.NODE_ENV === "test") {
+    await createTestConnection(true);
+  } else {
+    await createTypeOrmConnection();
+  }
   const app = await server.start({
     cors,
     port: process.env.NODE_ENV === "test" ? 0 : 4000,
