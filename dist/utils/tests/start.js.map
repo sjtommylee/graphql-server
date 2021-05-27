@@ -1,0 +1,1 @@
+{"version":3,"file":"start.js","sourceRoot":"","sources":["../../../src/utils/tests/start.ts"],"names":[],"mappings":";;;;;;;;;AAAA,OAAO,CAAC,kBAAkB,CAAC,CAAC;AAC5B,MAAM,EAAE,KAAK,EAAE,GAAG,OAAO,CAAC,SAAS,CAAC,CAAC;AAErC,MAAM,CAAC,OAAO,GAAG;;QACf,IAAI,CAAC,OAAO,CAAC,GAAG,CAAC,SAAS,EAAE;YAC1B,MAAM,KAAK,EAAE,CAAC;SACf;QACD,OAAO,IAAI,CAAC;IACd,CAAC;CAAA,CAAC"}
